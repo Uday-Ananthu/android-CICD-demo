@@ -34,6 +34,17 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('UnitTest') {
+            steps {
+                script {
+                    dir('BasicSample') {
+                        sh "${env.ANDROID_UNIT_TEST_COMMAND}"
+                    }
+                    // Publish Test Reports
+                    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, includes: '**/*.html', keepAll: false, reportDir: '', reportFiles: 'index.html', reportName: 'HTML Report'])
+                }
+            }
         } 
     }
 }
@@ -45,9 +56,11 @@ def setBuildCommandsBasedOnReleaseType() {
     echo "Is is release build: ${isReleaseBuild()}"
     if (isReleaseBuild()) {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleRelease'
+        env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleReleaseUnitTest testReleaseUnitTest'
         // Except Release Type of 'Release' everything for now is considered as Debug Build
     } else {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleDebug'
+        env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleDebugUnitTest testDebugUnitTest'
     }
 }
 
