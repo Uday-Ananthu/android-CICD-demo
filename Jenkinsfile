@@ -25,8 +25,7 @@ pipeline {
                 checkout scm
             }
         }
-    }
-    stage('Build') {
+        stage('Build') {
             steps {
                 script {
                     setBuildCommandsBasedOnReleaseType()
@@ -35,8 +34,8 @@ pipeline {
                     }
                 }
             }
-    }       
-
+        } 
+    }
 }
 
 /**
