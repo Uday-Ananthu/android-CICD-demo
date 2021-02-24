@@ -45,6 +45,15 @@ pipeline {
                     publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, includes: '**/*.html', keepAll: false, reportDir: '', reportFiles: 'index.html', reportName: 'HTML Report'])
                 }
             }
+        }
+        stage('LintAnalyser') {
+            steps {
+                script {
+                    dir('BasicSample') {
+                        sh "${env.ANDROID_LINT_COMMAND}"
+                    }
+                }
+            }
         } 
     }
 }
@@ -57,10 +66,12 @@ def setBuildCommandsBasedOnReleaseType() {
     if (isReleaseBuild()) {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleRelease'
         env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleReleaseUnitTest testReleaseUnitTest'
+        env.ANDROID_LINT_COMMAND = 'gradle lintRelease'
         // Except Release Type of 'Release' everything for now is considered as Debug Build
     } else {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleDebug'
         env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleDebugUnitTest testDebugUnitTest'
+        env.ANDROID_LINT_COMMAND = 'gradle lintDebug'
     }
 }
 
