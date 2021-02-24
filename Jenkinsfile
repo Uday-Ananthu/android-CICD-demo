@@ -54,6 +54,15 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('UITests') {
+            steps {
+                script {
+                    dir('BasicSample') {
+                        sh "${env.ANDROID_UI_TEST_COMMAND}"
+                    }
+                }
+            }
         } 
     }
 }
@@ -67,11 +76,13 @@ def setBuildCommandsBasedOnReleaseType() {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleRelease'
         env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleReleaseUnitTest testReleaseUnitTest'
         env.ANDROID_LINT_COMMAND = 'gradle lintRelease'
+        env.ANDROID_UI_TEST_COMMAND = 'gradle deviceCheck deviceAndroidTest'
         // Except Release Type of 'Release' everything for now is considered as Debug Build
     } else {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleDebug'
         env.ANDROID_UNIT_TEST_COMMAND = 'gradle assembleDebugUnitTest testDebugUnitTest'
         env.ANDROID_LINT_COMMAND = 'gradle lintDebug'
+        env.ANDROID_UI_TEST_COMMAND = 'gradle deviceCheck deviceAndroidTest'
     }
 }
 
