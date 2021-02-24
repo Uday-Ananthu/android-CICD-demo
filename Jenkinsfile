@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     setBuildCommandsBasedOnReleaseType()
-                    dir('ui/espresso/BasicSample') {
+                    dir('BasicSample') {
                         sh "${env.ANDROID_BUILD_COMMAND}"
                     }
                 }
