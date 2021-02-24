@@ -52,4 +52,7 @@ RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip && \
     unzip -d /opt/gradle gradle-6.5.1-bin.zip && \
     rm -f gradle-6.5.1-bin.zip
 ENV PATH=$GRADLE_HOME/bin:$PATH
-RUN gradle --version
+RUN gradle --version && \
+    mkdir -p /.android && chmod 777 /.android && \
+    touch /.robolectric-download-lock && chmod 777 /.robolectric-download-lock && \
+    mkdir -p /.m2 && chmod 777 /.m2
