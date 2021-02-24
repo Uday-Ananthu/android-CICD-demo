@@ -69,8 +69,15 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         sh "${env.ANDROID_PACKGER_COMMAND}"
+                        def release_name = "Release-0.0.${env.BUILD_NUMBER}"
+                        def tag_name = "v0.0.${env.BUILD_NUMBER}"
+                        def release_description = "Initial Release"
+                        def commit_sha = "main"
+                        def upload_assets = "${env.RELEASE_ASSETS_DIR}"
                         if (isReleaseBuild()) {
-                            sh 'bundle install && bundle exec fastlane githubRelease'
+                            withCredentials([usernamePassword(credentialsId: 'github_api_token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
+                                sh "bundle install && bundle exec fastlane githubRelease release_name:${release_name} tag_name:${tag_name} release_description:'${release_description}' commit_sha:${commit_sha} upload_assets:${upload_assets}"
+                            }
                         } else {
                             echo "[Info] Skipping APK release to GITHUB"
                         }

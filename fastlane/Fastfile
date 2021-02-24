@@ -1,0 +1,13 @@
+lane :githubRelease do |options|
+  # Calling built-in task to upload artifact as GITHUB Release
+  set_github_release(
+    repository_name: "Uday-Ananthu/android-CICD-demo",
+    api_token: ENV["GITHUB_TOKEN"],
+    name: options[:release_name],
+    tag_name: options[:tag_name],
+    description: options[:release_description],
+    commitish: options[:commit_sha],
+    upload_assets: [options[:upload_assets]]
+  )
+end
+
