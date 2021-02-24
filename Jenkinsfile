@@ -88,6 +88,15 @@ pipeline {
             }
         } 
     }
+    post {
+        failure {
+            script {
+                // Notify developers in relevant possible ways
+                // 1. Email, 2. Slack/Teams/WebEx
+                echo 'Job failed, sending notification to developers....'
+            }
+        }
+    }
 }
 
 /**
