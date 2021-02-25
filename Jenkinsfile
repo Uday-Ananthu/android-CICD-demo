@@ -31,6 +31,7 @@ pipeline {
                     setBuildCommandsBasedOnReleaseType()
                     dir('BasicSample') {
                         echo "Done..."
+                        sh 'id jenkins'
                         sh "${env.ANDROID_BUILD_COMMAND}"
                     }
                 }
