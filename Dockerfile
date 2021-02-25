@@ -1,5 +1,5 @@
 FROM adoptopenjdk:11.0.10_9-jdk-openj9-0.24.0
-MAINTAINER Uday Ananthu <udayk3469@gmail.com>
+MAINTAINER Vijay <gvreddy579@gmail.com>
 
 ENV ANDROID_SDK_URL=https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
 ENV ANDROID_HOME=/usr/local/android-sdk-linux
@@ -53,7 +53,7 @@ RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip && \
     unzip -d /opt/gradle gradle-6.5.1-bin.zip && \
     rm -f gradle-6.5.1-bin.zip
 ENV PATH=$GRADLE_HOME/bin:$PATH
-ENV DEFAULT_GEMFILE_PATH=/var/lib/gems/2.7.0/
+
 RUN gradle --version && \
     mkdir -p /.android && chmod 777 /.android && \
     touch /.robolectric-download-lock && chmod 777 /.robolectric-download-lock && \
@@ -61,8 +61,9 @@ RUN gradle --version && \
     chmod 777 /tmp && mkdir -p /.gem && chmod 777 /.gem && \
     mkdir -p /.fastlane && chmod 777 /.fastlane && chmod -R 777 /var/lib/gems/2.7.0/
 
-RUN useradd -u 501 -s /bin/bash jenkins
+RUN useradd -u 501 -s /bin/bash root
 RUN mkdir -p /home/jenkins
 RUN usermod -d /home/jenkins jenkins
 WORKDIR /home/jenkins
 USER jenkins
+

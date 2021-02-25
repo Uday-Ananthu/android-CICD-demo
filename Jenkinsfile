@@ -31,7 +31,7 @@ pipeline {
                     setBuildCommandsBasedOnReleaseType()
                     dir('BasicSample') {
                         echo "Done..."
- //                       sh "${env.ANDROID_BUILD_COMMAND}"
+                        sh "${env.ANDROID_BUILD_COMMAND}"
                     }
                 }
             }
@@ -41,7 +41,7 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         echo "Done..."
-                        //sh "${env.ANDROID_UNIT_TEST_COMMAND}"
+                        sh "${env.ANDROID_UNIT_TEST_COMMAND}"
                         junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
                         // Publish Test Reports
                         publishHTML([allowMissing         : true,
@@ -58,7 +58,7 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         echo "Done..."
-                        //sh "${env.ANDROID_LINT_COMMAND}"
+                        sh "${env.ANDROID_LINT_COMMAND}"
                         // Publish Test Reports
                         publishHTML([allowMissing         : true,
                                      alwaysLinkToLastBuild: true,
@@ -73,7 +73,7 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         echo "Done..."
-                        //sh "${env.ANDROID_UI_TEST_COMMAND}"
+                        sh "${env.ANDROID_UI_TEST_COMMAND}"
                     }
                 }
             }
@@ -83,7 +83,7 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         echo "Done..."
-                        //sh "${env.ANDROID_PACKGER_COMMAND}"
+                        sh "${env.ANDROID_PACKGER_COMMAND}"
                         def release_name = "Release-0.0.${env.BUILD_NUMBER}"
                         def tag_name = "v0.0.${env.BUILD_NUMBER}"
                         def release_description = "InitialRelease"
