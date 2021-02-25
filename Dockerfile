@@ -66,3 +66,4 @@ RUN mkdir -p /home/jenkins
 RUN usermod -d /home/jenkins jenkins
 WORKDIR /home/jenkins
 USER jenkins
+
