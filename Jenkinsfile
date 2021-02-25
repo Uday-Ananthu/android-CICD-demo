@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('SCM-Checkout') {
             steps {
-                //cleanWs()
+                cleanWs()
                 checkout scm
             }
         }
@@ -30,9 +30,7 @@ pipeline {
                 script {
                     setBuildCommandsBasedOnReleaseType()
                     dir('BasicSample') {
-                        echo "Done..."
-                        sh 'id jenkins && whoami'
-                        //sh "${env.ANDROID_BUILD_COMMAND}"
+                        sh "${env.ANDROID_BUILD_COMMAND}"
                     }
                 }
             }
@@ -41,14 +39,13 @@ pipeline {
             steps {
                 script {
                     dir('BasicSample') {
-                        echo "Done..."
-                        //sh "${env.ANDROID_UNIT_TEST_COMMAND}"
-                        //junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
+                        sh "${env.ANDROID_UNIT_TEST_COMMAND}"
+                        junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
                         // Publish Test Reports
-                        //publishHTML([allowMissing         : true,
-                        //             alwaysLinkToLastBuild: true,
-                        //             includes             : '**/*.*', keepAll: false,
-                        //             reportDir            : "${env.UNIT_TEST_REPORTS_DIR}", reportFiles: 'index.html', reportName: 'UNITTEST-HTML-Report'])
+                        publishHTML([allowMissing         : true,
+                                     alwaysLinkToLastBuild: true,
+                                     includes             : '**/*.*', keepAll: false,
+                                     reportDir            : "${env.UNIT_TEST_REPORTS_DIR}", reportFiles: 'index.html', reportName: 'UNITTEST-HTML-Report'])
                     }
 
                 }
@@ -58,13 +55,12 @@ pipeline {
             steps {
                 script {
                     dir('BasicSample') {
-                        echo "Done..."
-                        //sh "${env.ANDROID_LINT_COMMAND}"
+                        sh "${env.ANDROID_LINT_COMMAND}"
                         // Publish Test Reports
-                        //publishHTML([allowMissing         : true,
-                        //             alwaysLinkToLastBuild: true,
-                        //             includes             : '*.html', keepAll: false,
-                        //             reportDir            : 'app/build/reports/', reportFiles: "${env.LINT_REPORTS_NAME}", reportName: 'LINT-HTML-Report'])
+                        publishHTML([allowMissing         : true,
+                                     alwaysLinkToLastBuild: true,
+                                     includes             : '*.html', keepAll: false,
+                                     reportDir            : 'app/build/reports/', reportFiles: "${env.LINT_REPORTS_NAME}", reportName: 'LINT-HTML-Report'])
                     }
                 }
             }
@@ -73,8 +69,7 @@ pipeline {
             steps {
                 script {
                     dir('BasicSample') {
-                        echo "Done..."
-                        //sh "${env.ANDROID_UI_TEST_COMMAND}"
+                        sh "${env.ANDROID_UI_TEST_COMMAND}"
                     }
                 }
             }
@@ -83,20 +78,19 @@ pipeline {
             steps {
                 script {
                     dir('BasicSample') {
-                        echo "Done..."
-                        //sh "${env.ANDROID_PACKGER_COMMAND}"
-                        def release_name = "Release-0.0.${env.BUILD_NUMBER}"
-                        def tag_name = "v0.0.${env.BUILD_NUMBER}"
-                        def release_description = "InitialRelease"
-                        def commit_sha = "main"
-                        def upload_assets = "${env.RELEASE_ASSETS_DIR}"
-//                        if (isReleaseBuild()) {
+                        sh "${env.ANDROID_PACKGER_COMMAND}"
+                        if (isReleaseBuild()) {
+                            def release_name = "Release-0.0.${env.BUILD_NUMBER}"
+                            def tag_name = "v0.0.${env.BUILD_NUMBER}"
+                            def release_description = "InitialRelease"
+                            def commit_sha = "main"
+                            def upload_assets = "${env.RELEASE_ASSETS_DIR}"
                             withCredentials([usernamePassword(credentialsId: 'github_api_token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
                                 sh "bundle install && bundle exec fastlane githubRelease release_name:${release_name} tag_name:${tag_name} release_description:'${release_description}' commit_sha:${commit_sha} upload_assets:${upload_assets}"
                             }
- //                       } else {
- //                           echo "[Info] For debug releases skipping APK release to GITHUB"
- //                       }
+                        } else {
+                            echo "[Info] For debug releases skipping APK release to GITHUB"
+                        }
                     }
                 }
             }
@@ -104,7 +98,7 @@ pipeline {
                 success {
                     script {
                         // Archive the APKs so that they can be downloaded from Jenkins
-                        echo 'Archiving APKs...'
+                        echo '[Info] Archiving APKs...'
                         archiveArtifacts '**/*.zip'
                     }
                 }

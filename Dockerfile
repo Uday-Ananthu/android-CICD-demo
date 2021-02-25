@@ -54,16 +54,12 @@ RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip && \
     rm -f gradle-6.5.1-bin.zip
 ENV PATH=$GRADLE_HOME/bin:$PATH
 
-RUN gradle --version && \
-    mkdir -p /.android && chmod 777 /.android && \
-    touch /.robolectric-download-lock && chmod 777 /.robolectric-download-lock && \
-    mkdir -p /.m2 && chmod 777 /.m2 && \
-    chmod 777 /tmp && mkdir -p /.gem && chmod 777 /.gem && \
-    mkdir -p /.fastlane && chmod 777 /.fastlane && chmod -R 777 /var/lib/gems/2.7.0/
+RUN useradd -u 501 -s /bin/bash jenkins && \
+    mkdir -p /home/jenkins && \
+    usermod -d /home/jenkins jenkins && \
+    chown -R jenkins:jenkins /home/jenkins
+RUN chmod -R 777 /var/lib/gems/
 
-RUN useradd -u 501 -s /bin/bash jenkins
-RUN mkdir -p /home/jenkins
-RUN usermod -d /home/jenkins jenkins
 WORKDIR /home/jenkins
 USER jenkins
 
