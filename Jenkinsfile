@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'android-image:latest'
+            args '--network host --privileged --tty'
         }
     }
     options {
@@ -40,9 +41,14 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         sh "${env.ANDROID_UNIT_TEST_COMMAND}"
+                        junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
+                        // Publish Test Reports
+                        publishHTML([allowMissing         : true,
+                                     alwaysLinkToLastBuild: true,
+                                     includes             : '**/*.*', keepAll: false,
+                                     reportDir            : "${env.UNIT_TEST_REPORTS_DIR}", reportFiles: 'index.html', reportName: 'UNITTEST-HTML-Report'])
                     }
-                    // Publish Test Reports
-                    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, includes: '**/*.html', keepAll: false, reportDir: '', reportFiles: 'index.html', reportName: 'HTML Report'])
+
                 }
             }
         }
@@ -51,6 +57,11 @@ pipeline {
                 script {
                     dir('BasicSample') {
                         sh "${env.ANDROID_LINT_COMMAND}"
+                        // Publish Test Reports
+                        publishHTML([allowMissing         : true,
+                                     alwaysLinkToLastBuild: true,
+                                     includes             : '*.html', keepAll: false,
+                                     reportDir            : 'app/build/reports/', reportFiles: "${env.LINT_REPORTS_NAME}", reportName: 'LINT-HTML-Report'])
                     }
                 }
             }
@@ -79,7 +90,7 @@ pipeline {
                                 sh "bundle install && bundle exec fastlane githubRelease release_name:${release_name} tag_name:${tag_name} release_description:'${release_description}' commit_sha:${commit_sha} upload_assets:${upload_assets}"
                             }
                         } else {
-                            echo "[Info] Skipping APK release to GITHUB"
+                            echo "[Info] For debug releases skipping APK release to GITHUB"
                         }
                     }
                 }
@@ -93,7 +104,7 @@ pipeline {
                     }
                 }
             }
-        } 
+        }
     }
     post {
         failure {
@@ -117,6 +128,9 @@ def setBuildCommandsBasedOnReleaseType() {
         env.ANDROID_LINT_COMMAND = 'gradle lintRelease'
         env.ANDROID_UI_TEST_COMMAND = 'gradle deviceCheck deviceAndroidTest'
         env.ANDROID_PACKGER_COMMAND = 'gradle zipApksForRelease'
+        env.UNIT_TEST_REPORTS_DIR = 'app/build/reports/tests/testReleaseUnitTest'
+        env.LINT_REPORTS_NAME = 'lint-results-release.html'
+        env.RELEASE_ASSETS_DIR = 'app/build/outputs/apk-zips/release/apks.zip'
         // Except Release Type of 'Release' everything for now is considered as Debug Build
     } else {
         env.ANDROID_BUILD_COMMAND = 'gradle clean assembleDebug'
@@ -124,6 +138,9 @@ def setBuildCommandsBasedOnReleaseType() {
         env.ANDROID_LINT_COMMAND = 'gradle lintDebug'
         env.ANDROID_UI_TEST_COMMAND = 'gradle deviceCheck deviceAndroidTest'
         env.ANDROID_PACKGER_COMMAND = 'gradle zipApksForDebug'
+        env.UNIT_TEST_REPORTS_DIR = 'app/build/reports/tests/testDebugUnitTest'
+        env.LINT_REPORTS_NAME = 'lint-results-debug.html'
+        env.RELEASE_ASSETS_DIR = 'app/build/outputs/apk-zips/debug/apks.zip'
     }
 }
 
