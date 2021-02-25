@@ -81,7 +81,7 @@ pipeline {
                         sh "${env.ANDROID_PACKGER_COMMAND}"
                         def release_name = "Release-0.0.${env.BUILD_NUMBER}"
                         def tag_name = "v0.0.${env.BUILD_NUMBER}"
-                        def release_description = "Initial Release"
+                        def release_description = "InitialRelease"
                         def commit_sha = "main"
                         def upload_assets = "${env.RELEASE_ASSETS_DIR}"
 //                        if (isReleaseBuild()) {
