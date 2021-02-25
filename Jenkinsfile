@@ -11,7 +11,6 @@ pipeline {
         timeout(time: 2, unit: 'HOURS')
         // Stop the build early in case of compile or test failures
         skipStagesAfterUnstable()
-        parallelsAlwaysFailFast()
     }
     parameters {
         choice choices: ['Debug', 'Release'], description: 'Choose the type of release', name: 'RELEASE_TYPE'
@@ -85,13 +84,13 @@ pipeline {
                         def release_description = "Initial Release"
                         def commit_sha = "main"
                         def upload_assets = "${env.RELEASE_ASSETS_DIR}"
-                        if (isReleaseBuild()) {
+//                        if (isReleaseBuild()) {
                             withCredentials([usernamePassword(credentialsId: 'github_api_token', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
                                 sh "bundle install && bundle exec fastlane githubRelease release_name:${release_name} tag_name:${tag_name} release_description:'${release_description}' commit_sha:${commit_sha} upload_assets:${upload_assets}"
                             }
-                        } else {
-                            echo "[Info] For debug releases skipping APK release to GITHUB"
-                        }
+ //                       } else {
+ //                           echo "[Info] For debug releases skipping APK release to GITHUB"
+ //                       }
                     }
                 }
             }

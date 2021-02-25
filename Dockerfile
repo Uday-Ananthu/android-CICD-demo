@@ -39,7 +39,8 @@ RUN mkdir "$ANDROID_HOME" .android && \
     apt-get clean
 
 # Install Fastlane
-RUN gem install fastlane -NV && \
+RUN gem install rake && \
+    gem install fastlane -NV && \
     gem install bundler && \
     # Clean up
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
@@ -59,9 +60,3 @@ RUN gradle --version && \
     mkdir -p /.m2 && chmod 777 /.m2 && \
     chmod 777 /tmp && mkdir -p /.gem && chmod 777 /.gem && \
     mkdir -p /.fastlane && chmod 777 /.fastlane && chmod -R 777 /var/lib/gems/2.7.0/
-
-RUN useradd -u 501 -s /bin/bash jenkins
-RUN mkdir -p /home/jenkins
-RUN usermod -d /home/jenkins jenkins
-WORKDIR /home/jenkins
-USER jenkins
