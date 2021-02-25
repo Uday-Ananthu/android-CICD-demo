@@ -43,12 +43,12 @@ pipeline {
                     dir('BasicSample') {
                         echo "Done..."
                         //sh "${env.ANDROID_UNIT_TEST_COMMAND}"
-                        junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
+                        //junit allowEmptyResults: true, testResults: 'app/build/test-results/**/*.xml'
                         // Publish Test Reports
-                        publishHTML([allowMissing         : true,
-                                     alwaysLinkToLastBuild: true,
-                                     includes             : '**/*.*', keepAll: false,
-                                     reportDir            : "${env.UNIT_TEST_REPORTS_DIR}", reportFiles: 'index.html', reportName: 'UNITTEST-HTML-Report'])
+                        //publishHTML([allowMissing         : true,
+                        //             alwaysLinkToLastBuild: true,
+                        //             includes             : '**/*.*', keepAll: false,
+                        //             reportDir            : "${env.UNIT_TEST_REPORTS_DIR}", reportFiles: 'index.html', reportName: 'UNITTEST-HTML-Report'])
                     }
 
                 }
@@ -61,10 +61,10 @@ pipeline {
                         echo "Done..."
                         //sh "${env.ANDROID_LINT_COMMAND}"
                         // Publish Test Reports
-                        publishHTML([allowMissing         : true,
-                                     alwaysLinkToLastBuild: true,
-                                     includes             : '*.html', keepAll: false,
-                                     reportDir            : 'app/build/reports/', reportFiles: "${env.LINT_REPORTS_NAME}", reportName: 'LINT-HTML-Report'])
+                        //publishHTML([allowMissing         : true,
+                        //             alwaysLinkToLastBuild: true,
+                        //             includes             : '*.html', keepAll: false,
+                        //             reportDir            : 'app/build/reports/', reportFiles: "${env.LINT_REPORTS_NAME}", reportName: 'LINT-HTML-Report'])
                     }
                 }
             }
